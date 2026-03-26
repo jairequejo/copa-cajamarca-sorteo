@@ -1,85 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Copa Cajamarca – Sorteo</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copa Cajamarca – Sorteo</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="logo.svg">
 </head>
+
 <body>
 
-<header>
-  <div class="logo-circle">
-    <img src="logo.svg" alt="Copa Cajamarca"
-      style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
-      onerror="this.style.display='none';this.parentElement.innerHTML='⚽';">
-  </div>
-  <div class="header-text">
-    <h1>COPA CAJAMARCA</h1>
-    <p>Sorteo de Posiciones — Etapa Apertura 2026</p>
-  </div>
-  <div class="header-badges">
-    <span class="badge">FÚTBOL 7: 2015–2020</span>
-    <span class="badge">FÚTBOL 9: 2013–2014</span>
-  </div>
-</header>
-
-<div class="wrap">
-
-  <!-- ROW 1: Ruleta + Posiciones -->
-  <div class="row row-2">
-
-    <!-- RULETA -->
-    <div class="panel">
-      <div class="panel-hdr">🎯 RULETA DE SORTEO</div>
-      <div class="cat-grid" id="catGrid"></div>
-      <div class="wheel-wrap">
-        <div class="wheel-outer">
-          <div class="wheel-ptr"></div>
-          <canvas id="wCanvas" width="240" height="240"></canvas>
-          <div class="wheel-hub"></div>
+    <header>
+        <div class="logo-circle">
+            <img src="logo.svg" alt="Copa Cajamarca" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+                onerror="this.style.display='none';this.parentElement.innerHTML='⚽';">
         </div>
-        <div class="result-box" id="resultBox">
-          <div class="res-label">Selecciona categoría y gira</div>
+        <div class="header-text">
+            <h1>COPA CAJAMARCA</h1>
+            <p>Sorteo de Posiciones — Etapa Apertura 2026</p>
         </div>
-        <button class="spin-btn" id="spinBtn" onclick="spinWheel()">🎯 GIRAR RULETA</button>
-        <button class="reset-btn" onclick="resetDraw()">↺ REINICIAR SORTEO</button>
-        <div class="complete-banner" id="completeBanner">🏆 ¡SORTEO COMPLETO!</div>
-      </div>
-    </div>
+        <div class="header-badges">
+            <span class="badge">FÚTBOL 7: 2015–2020</span>
+            <span class="badge">FÚTBOL 9: 2013–2014</span>
+        </div>
+    </header>
 
-    <!-- POSICIONES -->
-    <div class="panel">
-      <div class="panel-hdr">🏅 POSICIONES SORTEADAS <span id="catLabel" style="font-size:0.9rem;letter-spacing:2px;color:var(--gris);font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-left:4px;"></span></div>
-      <div class="pos-grid" id="posGrid"></div>
+    <div class="wrap">
 
-      <!-- SEMIFINALES/FINAL (solo si ≤4) -->
-      <div id="sfSection" style="display:none;margin-top:18px;">
-        <div class="panel-hdr" style="margin-bottom:12px;">🏆 <span id="sfTitle">SEMIFINALES</span></div>
-        <div class="sf-box" id="sfBox"></div>
-      </div>
-    </div>
+        <!-- ROW 1: Ruleta + Posiciones -->
+        <div class="row row-2">
 
-  </div>
+            <!-- RULETA -->
+            <div class="panel">
+                <div class="panel-hdr">🎯 RULETA DE SORTEO</div>
+                <div class="cat-grid" id="catGrid"></div>
+                <div class="wheel-wrap">
+                    <div class="wheel-outer">
+                        <div class="wheel-ptr"></div>
+                        <canvas id="wCanvas" width="240" height="240"></canvas>
+                        <div class="wheel-hub"></div>
+                    </div>
+                    <div class="result-box" id="resultBox">
+                        <div class="res-label">Selecciona categoría y gira</div>
+                    </div>
+                    <button class="spin-btn" id="spinBtn" onclick="spinWheel()">🎯 GIRAR RULETA</button>
+                    <button class="reset-btn" onclick="resetDraw()">↺ REINICIAR SORTEO</button>
+                    <div class="complete-banner" id="completeBanner">🏆 ¡SORTEO COMPLETO!</div>
+                </div>
+            </div>
 
-  <!-- ROW 2: Fixture generado (full width) -->
-  <div class="panel">
-    <div class="panel-hdr" id="fixturePanelHdr">📅 FIXTURE GENERADO</div>
-    <div class="fixture-controls" id="fixtureControls" style="display:none;">
-      <label>Jornada:</label>
-      <select id="filterJornada" onchange="renderFixture()">
-        <option value="">Todas</option>
-      </select>
-      <label>Buscar equipo:</label>
-      <input type="text" id="searchEquipo" placeholder="Nombre del equipo…" oninput="renderFixture()" style="width:200px;">
-    </div>
-    <div id="fixtureContent"><div class="no-fixture">El fixture aparecerá cuando completes el sorteo de la categoría.</div></div>
-  </div>
+            <!-- POSICIONES -->
+            <div class="panel">
+                <div class="panel-hdr">🏅 POSICIONES SORTEADAS <span id="catLabel"
+                        style="font-size:0.9rem;letter-spacing:2px;color:var(--gris);font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-left:4px;"></span>
+                </div>
+                <div class="pos-grid" id="posGrid"></div>
 
-</div><!-- /wrap -->
-<canvas id="particleCanvas"></canvas>
+                <!-- SEMIFINALES/FINAL (solo si ≤4) -->
+                <div id="sfSection" style="display:none;margin-top:18px;">
+                    <div class="panel-hdr" style="margin-bottom:12px;">🏆 <span id="sfTitle">SEMIFINALES</span></div>
+                    <div class="sf-box" id="sfBox"></div>
+                </div>
+            </div>
 
-<script src="app.js"></script>
+        </div>
+
+        <!-- ROW 2: Fixture generado (full width) -->
+        <div class="panel">
+            <div class="panel-hdr" id="fixturePanelHdr">📅 FIXTURE GENERADO</div>
+            <div class="fixture-controls" id="fixtureControls" style="display:none;">
+                <label>Jornada:</label>
+                <select id="filterJornada" onchange="renderFixture()">
+                    <option value="">Todas</option>
+                </select>
+                <label>Buscar equipo:</label>
+                <input type="text" id="searchEquipo" placeholder="Nombre del equipo…" oninput="renderFixture()"
+                    style="width:200px;">
+            </div>
+            <div id="fixtureContent">
+                <div class="no-fixture">El fixture aparecerá cuando completes el sorteo de la categoría.</div>
+            </div>
+        </div>
+
+    </div><!-- /wrap -->
+    <canvas id="particleCanvas"></canvas>
+
+    <script src="app.js"></script>
 </body>
+
 </html>
