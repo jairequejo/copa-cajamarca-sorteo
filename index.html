@@ -87,6 +87,18 @@
             </div>
         </div>
 
+        <!-- EXPORTAR FIXTURE COMPLETO -->
+        <div class="panel" id="exportPanel" style="display:none;">
+            <div class="panel-hdr">📋 EXPORTAR FIXTURE COMPLETO</div>
+            <p class="export-desc">Copia la tabla y pégala directamente en <strong>Google Sheets</strong> o <strong>Excel</strong>. Las columnas coinciden con el formato FIXTURE.</p>
+            <div class="export-meta" id="exportMeta"></div>
+            <textarea class="export-area" id="exportArea" readonly spellcheck="false" placeholder="Los datos aparecerán aquí…"></textarea>
+            <div class="export-actions">
+                <button class="export-btn" id="exportCopyBtn" onclick="app.exportAll()">📋 GENERAR Y COPIAR AL PORTAPAPELES</button>
+                <span class="export-hint" id="exportHint"></span>
+            </div>
+        </div>
+
     </div><!-- /wrap -->
     <canvas id="particleCanvas"></canvas>
 

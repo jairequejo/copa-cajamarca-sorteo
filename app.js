@@ -2,14 +2,14 @@
 // CONSTANTES GLOBALES
 // ============================================
 const EQUIPOS = {
-  "2013": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","FC RIVER","ANCEL FC","DEPORTIVO ANCEL","COCO OLIVA","ALAN VILLATI"],
-  "2014": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","COCO OLIVA"],
-  "2015": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","COCO OLIVA"],
-  "2016": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","EFB BARCELONA","COCO OLIVA","ALAN VILLATI"],
+  "2013": ["AAC RETOÑITOS","JR STARS","FC RIVER","ANCEL FC","DEPORTIVO ANCEL"],
+  "2014": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","ANCEL FC","COCO OLIVA"],
+  "2015": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","JJ LOS LEONES","COCO OLIVA","ALAN VILLATI"],
+  "2016": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","EFB BARCELONA","ANCEL FC","COCO OLIVA"],
   "2017": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","SAINTHORE","PERFECT SOCCER","JOTITAS","COCO OLIVA","ALAN VILLATI"],
-  "2018": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","ANCEL FC","OLYMPIC FC"],
-  "2019": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","OLYMPIC FC","ANCEL FC"],
-  "2020": ["U CAJAMARCA","AAC RETOÑITOS","JJ LOS LEONES"]
+  "2018": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","ANCEL FC"],
+  "2019": ["AAC RETOÑITOS","JR STARS","OLYMPIC FC"],
+  "2020": ["U CAJAMARCA","AAC RETOÑITOS"]
 };
 
 const COLORS = [
@@ -378,6 +378,7 @@ class SorteoApp {
     this.wheel.angle = 0;
     this.renderPos();
     this.wheel.draw(this.state[this.currentCat].remaining);
+    this.checkExportReady();
   }
 
   // ---------------------------
@@ -602,6 +603,7 @@ class SorteoApp {
       `📅 FIXTURE — CAT ${this.currentCat} (${jornadas.length} jornadas · ${matches.length} partidos${byeNote})`;
     this._el('fixtureControls').style.display = 'flex';
     this.renderFixture();
+    this.checkExportReady();
   }
 
   renderFixture() {
@@ -654,6 +656,99 @@ class SorteoApp {
       html += '</div>';
     });
     this._el('fixtureContent').innerHTML = html;
+  }
+
+  // ---------------------------
+  // EXPORTAR FIXTURE
+  // ---------------------------
+
+  /**
+   * Revisa cuántas categorías tienen fixture generado
+   * y muestra/oculta el panel de exportación.
+   */
+  checkExportReady() {
+    const completed = Object.keys(EQUIPOS).filter(
+      cat => this.state[cat].remaining.length === 0
+    );
+    const panel = this._el('exportPanel');
+    if (completed.length === 0) { panel.style.display = 'none'; return; }
+
+    panel.style.display = 'block';
+
+    // Construir tags de resumen
+    const meta = this._el('exportMeta');
+    meta.innerHTML = completed.map(cat =>
+      `<span class="export-meta-tag">CAT ${cat} — ${EQUIPOS[cat].length} equipos</span>`
+    ).join('');
+
+    // Pre-cargar el textarea con los datos actuales
+    this._buildTSV();
+  }
+
+  /** Genera el texto TSV, lo vuelca al textarea y lo copia al portapapeles */
+  exportAll() {
+    const tsv = this._buildTSV();
+    navigator.clipboard.writeText(tsv).then(() => {
+      const hint = this._el('exportHint');
+      hint.textContent = '✅ ¡Copiado! Pega en Google Sheets con Ctrl+V';
+      hint.classList.add('show');
+      setTimeout(() => hint.classList.remove('show'), 3500);
+    }).catch(() => {
+      // Fallback si clipboard no está disponible
+      const area = this._el('exportArea');
+      area.select();
+      document.execCommand('copy');
+    });
+  }
+
+  /**
+   * Construye el texto TSV con formato:
+   * Jornada \t CATEGORIA \t Local \t Score \t Visitante \t Goles Local \t Goles Visitante \t Resultado
+   * @returns {string} texto listo para pegar en Excel/Sheets
+   */
+  _buildTSV() {
+    const header = ['Jornada','CATEGORIA','Local','Score','Visitante','Goles Local','Goles Visitante','Resultado'].join('\t');
+    const rows = [header];
+
+    // Recorrer categorías en orden
+    Object.keys(EQUIPOS).forEach(cat => {
+      const s = this.state[cat];
+      if (s.remaining.length > 0) return; // no completada
+
+      // Rebuild fixture data from scratch using sorted order
+      const teams = [...s.drawn];
+      const list  = [...teams];
+      if (list.length % 2 !== 0) list.push('LIBRE');
+      const tot = list.length, rounds = tot - 1;
+      let half = [...list];
+
+      for (let r = 0; r < rounds; r++) {
+        const top = half.slice(0, tot / 2);
+        const bot = half.slice(tot / 2).reverse();
+        for (let i = 0; i < tot / 2; i++) {
+          if (top[i] !== 'LIBRE' && bot[i] !== 'LIBRE') {
+            rows.push([
+              r + 1,          // Jornada
+              cat,            // CATEGORIA
+              top[i],         // Local
+              '- : -',        // Score
+              bot[i],         // Visitante
+              '',             // Goles Local (vacío para editar)
+              '',             // Goles Visitante (vacío para editar)
+              'PENDIENTE'     // Resultado
+            ].join('\t'));
+          }
+        }
+        const fixed = half[0], rest = half.slice(1);
+        rest.unshift(rest.pop());
+        half = [fixed, ...rest];
+      }
+    });
+
+    const tsv = rows.join('\n');
+    const area = this._el('exportArea');
+    if (area) area.value = tsv;
+    return tsv;
   }
 
   // ---------------------------
