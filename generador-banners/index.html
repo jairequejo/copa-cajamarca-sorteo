@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copa Cajamarca – Generador de Banners</title>
+  <meta name="description" content="Genera banners 1080x1080 px para la Copa Cajamarca al instante desde tu programación en Excel.">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="gold-stripe"></div>
+
+<nav>
+  <a class="nav-logo" href="../index.html">
+    <img src="../logo.svg" alt="Copa Cajamarca Logo">
+    <span class="nav-logo-text">Copa Cajamarca</span>
+  </a>
+  <a class="nav-back" href="../index.html">← Volver al inicio</a>
+</nav>
+
+<div class="editor">
+  <div class="editor-header">
+    <span style="font-size:34px">🏆</span>
+    <div>
+      <div class="editor-title">Copa Cajamarca — Generador de Banners</div>
+      <div class="editor-sub">Pega la programación desde Excel y genera el banner 1080×1080 px al instante.</div>
+    </div>
+  </div>
+
+  <div class="form-grid cols3">
+    <div><label>Etiqueta derecha</label><input type="text" id="etiqueta" value="FÚTBOL 9"></div>
+    <div><label>Fecha del evento</label><input type="text" id="fecha" value="Sábado 20 de Diciembre del 2025"></div>
+    <div><label>Sede / Cancha</label><input type="text" id="sede" value='Grass Sintético "EL GOLAZO"'></div>
+  </div>
+
+  <div class="form-grid">
+    <div><label>Temporada</label><input type="text" id="temporada" value="TEMPORADA 2025"></div>
+    <div><label>Sub-etiqueta</label><input type="text" id="subetiq" value="PROGRAMACIÓN"></div>
+  </div>
+
+  <div class="form-grid full">
+    <div>
+      <label>Programación — pega desde hoja de cálculo o texto corrido</label>
+      <textarea id="rawData">8:50 a.m.	U CAJAMARCA	VS	COCO OLIVA	2015
+9:35 a.m.	JJ LOS LEONES	VS	JR STARS	2015
+10:10 a.m.	ANCEL FC	VS	EFB BARCELONA	2016
+10:45 a.m.	AAC RETOÑITOS	VS	U CAJAMARCA	2016
+11:20 a.m.	COCO OLIVA	VS	JR STARS	2016
+11:55 a.m.	JOTITAS	VS	U MENDOZA	2017
+12:30 p.m.	SAINTHORE	VS	U CAJAMARCA	2017
+1:05 p.m.	AAC RETOÑITOS	VS	COCO OLIVA	2017
+1:40 p.m.	PERFECT SOCCER	VS	JR STARS	2017
+2:15 p.m.	ANCEL FC	VS	JR STARS	2018
+2:50 p.m.	U CAJAMARCA	VS	AAC RETOÑITOS	2018</textarea>
+      <div class="hint">Columnas: HORA · EQUIPO A · VS · EQUIPO B · CATEGORÍA · [TIPO opcional]. Funciona con tabs (Excel) o texto corrido.</div>
+    </div>
+  </div>
+
+  <button class="btn-gen" onclick="generateBanner()">⚽ GENERAR BANNER 1080×1080</button>
+  <div id="parse-error" class="error"></div>
+</div>
+
+<div id="preview-area" style="display:none">
+  <h2>Vista previa 1080×1080 px</h2>
+  <canvas id="banner-canvas"></canvas><br>
+  <button class="btn-dl" onclick="downloadBanner()">⬇ DESCARGAR PNG</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

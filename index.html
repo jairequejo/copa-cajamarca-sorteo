@@ -2,107 +2,490 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Copa Cajamarca – Sorteo</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="logo.svg" type="image/svg+xml">
-    <link rel="shortcut icon" href="logo.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Copa Cajamarca</title>
+  <meta name="description" content="Plataforma de gestión para la Copa Cajamarca – Campeonato de Menores de Fútbol.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --gold: #f5a800;
+      --gold2: #ffd15c;
+      --gold3: #c47f00;
+      --navy: #06091a;
+      --navy2: #071540;
+      --navy3: #0c1e70;
+      --text: #e8eeff;
+      --muted: #5a7ab0;
+    }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO BG ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #020818 0%, #071540 40%, #071540 60%, #020818 100%);
+      z-index: 0;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(18, 48, 155, 0.55) 0%, rgba(2, 8, 24, 0) 65%);
+      z-index: 0;
+    }
+
+    /* dot grid */
+    .dot-grid {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: radial-gradient(rgba(48, 85, 187, 0.12) 1.5px, transparent 1.5px);
+      background-size: 38px 38px;
+    }
+
+    /* diagonal lines */
+    .diag {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .diag::before {
+      content: '';
+      position: absolute;
+      inset: -100%;
+      background: repeating-linear-gradient(45deg, transparent, transparent 22px, rgba(64, 96, 208, 0.045) 22px, rgba(64, 96, 208, 0.045) 24px);
+    }
+
+    /* gold top stripe */
+    .gold-stripe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      z-index: 100;
+      background: linear-gradient(90deg, #6a3c00, #f5a800 20%, #ffd15c 50%, #f5a800 80%, #6a3c00);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 8px;
+      left: 0;
+      right: 0;
+      z-index: 99;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 32px;
+      background: rgba(6, 9, 26, 0.88);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(245, 168, 0, 0.18);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      height: 40px;
+      width: 40px;
+      object-fit: contain;
+      border-radius: 50%;
+      border: 2px solid var(--gold3);
+    }
+
+    .nav-logo-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    /* ── HERO CONTENT ── */
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 780px;
+    }
+
+    .hero-logo {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+      border-radius: 50%;
+      border: 3px solid rgba(245, 168, 0, 0.5);
+      box-shadow: 0 0 40px rgba(245, 168, 0, 0.3), 0 0 80px rgba(245, 168, 0, 0.15);
+      margin-bottom: 24px;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(245, 168, 0, 0.12);
+      border: 1px solid rgba(245, 168, 0, 0.35);
+      color: var(--gold2);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 10vw, 88px);
+      letter-spacing: 3px;
+      line-height: 1;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 40%, var(--gold2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+    }
+
+    .hero-sub {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #8aacee;
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: #6a8bc0;
+      line-height: 1.7;
+      max-width: 540px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #f5a800, #ffd15c 50%, #c47f00);
+      color: #060d2e;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      padding: 14px 38px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 28px rgba(245, 168, 0, 0.4);
+      transition: opacity .2s, transform .15s;
+    }
+
+    .hero-cta:hover {
+      opacity: .9;
+      transform: translateY(-2px);
+    }
+
+    .hero-cta-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--gold);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      padding: 13px 36px;
+      border-radius: 8px;
+      border: 1.5px solid var(--gold);
+      text-decoration: none;
+      margin-left: 14px;
+      transition: background .2s, transform .15s;
+    }
+
+    .hero-cta-ghost:hover {
+      background: rgba(245, 168, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* ── MODULES SECTION ── */
+    .modules {
+      padding: 80px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .section-line {
+      width: 60px;
+      height: 3px;
+      margin: 0 auto 48px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .module-card {
+      background: rgba(10, 17, 48, 0.7);
+      border: 1.5px solid rgba(30, 50, 114, 0.6);
+      border-radius: 14px;
+      padding: 28px 24px;
+      cursor: pointer;
+      transition: border-color .25s, transform .2s, box-shadow .25s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .module-card:hover {
+      border-color: rgba(245, 168, 0, 0.55);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(245, 168, 0, 0.12);
+    }
+
+    .module-icon {
+      font-size: 38px;
+      margin-bottom: 14px;
+    }
+
+    .module-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      letter-spacing: 1.5px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .module-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .module-tag {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 3px 12px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: rgba(245, 168, 0, 0.12);
+      color: var(--gold2);
+      border: 1px solid rgba(245, 168, 0, 0.25);
+    }
+
+    .module-tag.soon {
+      background: rgba(90, 122, 176, 0.12);
+      color: var(--muted);
+      border-color: rgba(90, 122, 176, 0.25);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 28px 24px;
+      border-top: 1px solid rgba(245, 168, 0, 0.12);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer span {
+      color: var(--gold);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:600px) {
+      nav {
+        padding: 8px 16px;
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+
+      .hero-cta-ghost {
+        margin-left: 0;
+        margin-top: 12px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <header>
-        <div class="logo-circle">
-            <img src="logo.svg" alt="Copa Cajamarca" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
-                onerror="this.style.display='none';this.parentElement.innerHTML='⚽';">
-        </div>
-        <div class="header-text">
-            <h1>COPA CAJAMARCA</h1>
-            <p>Sorteo de Posiciones — Etapa Apertura 2026</p>
-        </div>
-        <div class="header-badges">
-            <span class="badge">FÚTBOL 7: 2015–2020</span>
-            <span class="badge">FÚTBOL 9: 2013–2014</span>
-        </div>
-    </header>
+  <div class="gold-stripe"></div>
 
-    <div class="wrap">
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <img src="logo.svg" alt="Copa Cajamarca Logo">
+      <span class="nav-logo-text">Copa Cajamarca</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#modulos">Módulos</a></li>
+      <li><a href="sorteo/index.html">Sorteo</a></li>
+      <li><a href="generador-banners/index.html">Banners</a></li>
+    </ul>
+  </nav>
 
-        <!-- ROW 1: Ruleta + Posiciones -->
-        <div class="row row-2">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="dot-grid"></div>
+    <div class="diag"></div>
 
-            <!-- RULETA -->
-            <div class="panel">
-                <div class="panel-hdr">🎯 RULETA DE SORTEO</div>
-                <div class="cat-grid" id="catGrid"></div>
-                <div class="wheel-wrap">
-                    <div class="wheel-outer">
-                        <div class="wheel-ptr"></div>
-                        <canvas id="wCanvas" width="240" height="240"></canvas>
-                        <div class="wheel-hub"></div>
-                    </div>
-                    <div class="result-box" id="resultBox">
-                        <div class="res-label">Selecciona categoría y gira</div>
-                    </div>
-                    <button class="spin-btn" id="spinBtn" onclick="spinWheel()">🎯 GIRAR RULETA</button>
-                    <button class="reset-btn" onclick="resetDraw()">↺ REINICIAR SORTEO</button>
-                    <div class="complete-banner" id="completeBanner">🏆 ¡SORTEO COMPLETO!</div>
-                </div>
-            </div>
+    <div class="hero-inner">
+      <img class="hero-logo" src="logo.svg" alt="Copa Cajamarca">
+      <div class="hero-badge">⚽ Temporada 2025</div>
+      <h1 class="hero-title">Gestor de<br>Copa Cajamarca</h1>
+      <p class="hero-sub">Campeonato de Menores · Fútbol 9</p>
+      <p class="hero-desc">
+        Plataforma integral para la gestión del torneo: sorteos de grupos, programación de partidos y
+        generación de banners publicitarios profesionales al instante.
+      </p>
+      <div>
+        <a class="hero-cta" href="sorteo/index.html">🏆 Ir al Sorteo</a>
+        <a class="hero-cta-ghost" href="generador-banners/index.html">🎨 Generar Banners</a>
+      </div>
+    </div>
+  </section>
 
-            <!-- POSICIONES -->
-            <div class="panel">
-                <div class="panel-hdr">🏅 POSICIONES SORTEADAS <span id="catLabel"
-                        style="font-size:0.9rem;letter-spacing:2px;color:var(--gris);font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-left:4px;"></span>
-                </div>
-                <div class="pos-grid" id="posGrid"></div>
+  <!-- MODULES -->
+  <section class="modules" id="modulos">
+    <h2 class="section-title">Módulos del Sistema</h2>
+    <div class="section-line"></div>
 
-                <!-- SEMIFINALES/FINAL (solo si ≤4) -->
-                <div id="sfSection" style="display:none;margin-top:18px;">
-                    <div class="panel-hdr" style="margin-bottom:12px;">🏆 <span id="sfTitle">SEMIFINALES</span></div>
-                    <div class="sf-box" id="sfBox"></div>
-                </div>
-            </div>
+    <div class="module-grid">
 
-        </div>
+      <a href="sorteo/index.html" class="module-card">
+        <div class="module-icon">🎲</div>
+        <div class="module-name">Sorteo de Grupos</div>
+        <p class="module-desc">
+          Realiza el sorteo aleatorio de equipos en grupos de forma visual e interactiva.
+          Genera las llaves del torneo automáticamente.
+        </p>
+        <span class="module-tag">Disponible</span>
+      </a>
 
-        <!-- ROW 2: Fixture generado (full width) -->
-        <div class="panel">
-            <div class="panel-hdr" id="fixturePanelHdr">📅 FIXTURE GENERADO</div>
-            <div class="fixture-controls" id="fixtureControls" style="display:none;">
-                <label>Jornada:</label>
-                <select id="filterJornada" onchange="renderFixture()">
-                    <option value="">Todas</option>
-                </select>
-                <label>Buscar equipo:</label>
-                <input type="text" id="searchEquipo" placeholder="Nombre del equipo…" oninput="renderFixture()"
-                    style="width:200px;">
-            </div>
-            <div id="fixtureContent">
-                <div class="no-fixture">El fixture aparecerá cuando completes el sorteo de la categoría.</div>
-            </div>
-        </div>
+      <a href="generador-banners/index.html" class="module-card">
+        <div class="module-icon">🖼️</div>
+        <div class="module-name">Generador de Banners</div>
+        <p class="module-desc">
+          Crea banners 1080×1080 px para redes sociales al instante. Pega la programación
+          desde Excel y descarga el diseño profesional en PNG.
+        </p>
+        <span class="module-tag">Disponible</span>
+      </a>
 
-        <!-- EXPORTAR FIXTURE COMPLETO -->
-        <div class="panel" id="exportPanel" style="display:none;">
-            <div class="panel-hdr">📋 EXPORTAR FIXTURE COMPLETO</div>
-            <p class="export-desc">Copia la tabla y pégala directamente en <strong>Google Sheets</strong> o <strong>Excel</strong>. Las columnas coinciden con el formato FIXTURE.</p>
-            <div class="export-meta" id="exportMeta"></div>
-            <textarea class="export-area" id="exportArea" readonly spellcheck="false" placeholder="Los datos aparecerán aquí…"></textarea>
-            <div class="export-actions">
-                <button class="export-btn" id="exportCopyBtn" onclick="app.exportAll()">📋 GENERAR Y COPIAR AL PORTAPAPELES</button>
-                <span class="export-hint" id="exportHint"></span>
-            </div>
-        </div>
+      <div class="module-card" style="cursor:default;opacity:.7">
+        <div class="module-icon">📊</div>
+        <div class="module-name">Tabla de Posiciones</div>
+        <p class="module-desc">
+          Seguimiento de puntos, goles y estadísticas de todos los equipos y categorías
+          del campeonato en tiempo real.
+        </p>
+        <span class="module-tag soon">Próximamente</span>
+      </div>
 
-    </div><!-- /wrap -->
-    <canvas id="particleCanvas"></canvas>
+      <div class="module-card" style="cursor:default;opacity:.7">
+        <div class="module-icon">📅</div>
+        <div class="module-name">Calendario de Partidos</div>
+        <p class="module-desc">
+          Visualiza y gestiona la programación completa de jornadas con filtros por
+          fecha, categoría y sede.
+        </p>
+        <span class="module-tag soon">Próximamente</span>
+      </div>
 
-    <script src="app.js"></script>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 <span>Copa Cajamarca</span> · Campeonato de Menores · Temporada 2025</p>
+  </footer>
+
 </body>
 
 </html>
