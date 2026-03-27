@@ -4,9 +4,9 @@
 const EQUIPOS = {
   "2013": ["AAC RETOÑITOS","JR STARS","FC RIVER","ANCEL FC","DEPORTIVO ANCEL"],
   "2014": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","ANCEL FC","COCO OLIVA"],
-  "2015": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","JJ LOS LEONES","COCO OLIVA","ALAN VILLATI"],
+  "2015": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","JJ LOS LEONES","COCO OLIVA"],
   "2016": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","EFB BARCELONA","ANCEL FC","COCO OLIVA"],
-  "2017": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","SAINTHORE","PERFECT SOCCER","JOTITAS","COCO OLIVA","ALAN VILLATI"],
+  "2017": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","SAINTHORE","PERFECT SOCCER","JOTITAS","COCO OLIVA", "U MENDOZA"],
   "2018": ["U CAJAMARCA","AAC RETOÑITOS","JR STARS","ANCEL FC"],
   "2019": ["AAC RETOÑITOS","JR STARS","OLYMPIC FC"],
   "2020": ["U CAJAMARCA","AAC RETOÑITOS"]
@@ -512,39 +512,6 @@ class SorteoApp {
           <span class="sf-vs">VS</span>
           <span class="sf-team">${d[1] || '—'}</span>
           <span class="sf-pos c2">2°</span>
-        </div>`;
-      return;
-    }
-
-    if (total === 3) {
-      sfTitle.textContent = 'SEMIFINALES';
-      sfBox.innerHTML = `
-        <div class="sf-match">
-          <span class="sf-pos c1">1°</span><span class="sf-team">${d[0] || '—'}</span>
-          <span class="sf-vs">VS</span>
-          <span class="sf-team">${d[2] || '—'}</span><span class="sf-pos c3">3°</span>
-        </div>
-        <div class="sf-match">
-          <span class="sf-pos c2">2°</span><span class="sf-team">${d[1] || '—'}</span>
-          <span class="sf-vs">VS</span>
-          <span class="sf-team descanso-tag">DESCANSA</span>
-          <span class="sf-note">Pasa directo a Final</span>
-        </div>`;
-      return;
-    }
-
-    if (total === 4) {
-      sfTitle.textContent = 'SEMIFINALES';
-      sfBox.innerHTML = `
-        <div class="sf-match">
-          <span class="sf-pos c1">1°</span><span class="sf-team">${d[0] || '—'}</span>
-          <span class="sf-vs">VS</span>
-          <span class="sf-team">${d[3] || '—'}</span><span class="sf-pos c4">4°</span>
-        </div>
-        <div class="sf-match">
-          <span class="sf-pos c2">2°</span><span class="sf-team">${d[1] || '—'}</span>
-          <span class="sf-vs">VS</span>
-          <span class="sf-team">${d[2] || '—'}</span><span class="sf-pos c3">3°</span>
         </div>`;
       return;
     }
