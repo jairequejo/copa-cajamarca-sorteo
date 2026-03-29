@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Copa Cajamarca – Generador de Resultados</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;background:#06091a;color:#fff;min-height:100vh}
+.stripe{position:fixed;top:0;left:0;width:100%;height:7px;z-index:200;
+  background:linear-gradient(90deg,#6a3c00,#f5a800 25%,#ffd15c 50%,#f5a800 75%,#6a3c00)}
+nav{position:fixed;top:7px;left:0;right:0;z-index:99;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 28px;background:rgba(6,9,26,.95);
+  backdrop-filter:blur(12px);border-bottom:1px solid rgba(245,168,0,.18)}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;color:#f5a800}
+.editor{max-width:860px;margin:0 auto;padding:78px 22px 28px}
+.editor-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.editor-icon{font-size:34px}
+.editor-title{font-family:'Bebas Neue',sans-serif;font-size:27px;letter-spacing:2px;color:#f5a800;line-height:1}
+.editor-sub{font-size:11px;color:#4a6a9a;margin-top:4px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.grid1{margin-bottom:10px}
+label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.12em;color:#567ab0;margin-bottom:4px}
+input[type=text],textarea{width:100%;background:#090f28;border:1.5px solid #1c2e60;
+  border-radius:7px;color:#fff;padding:8px 11px;font-family:'Barlow',sans-serif;
+  font-size:13px;outline:none;transition:border-color .2s}
+input:focus,textarea:focus{border-color:#f5a800}
+textarea{height:160px;resize:vertical;font-size:12px;line-height:1.6;font-family:monospace}
+.hint{font-size:10.5px;color:#3a5270;margin-top:5px;line-height:1.65}
+.hint code{background:rgba(255,255,255,.08);padding:1px 6px;border-radius:3px;font-size:10px;font-family:monospace}
+.btn-gen{background:linear-gradient(135deg,#f5a800,#ffd15c 50%,#c47f00);
+  color:#06091a;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;
+  border:none;border-radius:8px;padding:11px 36px;cursor:pointer;margin-top:10px;
+  transition:opacity .2s,transform .1s;box-shadow:0 4px 22px rgba(245,168,0,.35)}
+.btn-gen:hover{opacity:.9;transform:translateY(-1px)}
+.btn-dl{margin-top:12px;background:transparent;color:#f5a800;border:1.5px solid #f5a800;
+  font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1.5px;border-radius:8px;
+  padding:9px 26px;cursor:pointer;transition:background .2s}
+.btn-dl:hover{background:rgba(245,168,0,.1)}
+.err{color:#ff6b6b;font-size:12px;margin-top:6px;min-height:18px;font-weight:600}
+.ok{color:#4ade80;font-size:12px;margin-top:4px;min-height:16px}
+#preview-area{max-width:860px;margin:0 auto 60px;padding:0 22px}
+#preview-area h2{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#f5a800;
+  letter-spacing:1px;margin-bottom:13px}
+#banner-canvas{width:100%;max-width:580px;display:block;border-radius:10px;
+  box-shadow:0 12px 60px rgba(0,0,0,.75),0 0 0 1px rgba(245,168,0,.15)}
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<nav>
+  <span class="nav-brand">⚽ Copa Cajamarca — Generador de Resultados</span>
+</nav>
+
+<div class="editor">
+  <div class="editor-header">
+    <span class="editor-icon">📊</span>
+    <div>
+      <div class="editor-title">Copa Cajamarca — Resultados 1080×1080</div>
+      <div class="editor-sub">Copia y pega directamente desde Excel (Jornada · Local · Score · Visitante)</div>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div><label>Fecha del evento</label><input type="text" id="fecha" value="Domingo 16 de Noviembre del 2026"></div>
+    <div><label>Fútbol (número: 7, 9…)</label><input type="text" id="futbol" value="7" placeholder="7 o 9"></div>
+    <div><label>Temporada</label><input type="text" id="temporada" value="TEMPORADA 2026"></div>
+  </div>
+
+  <div class="grid1">
+    <label>Resultados — pega desde Excel (sin encabezado)</label>
+    <textarea id="rawData" placeholder="1&#9;JR STARS&#9;0 - 0&#9;DEPORTIVO ANCEL&#10;1&#9;AAC RETOÑITOS&#9;0 - 0&#9;ANCEL FC&#10;2&#9;JR STARS&#9;0 - 0&#9;ANCEL FC"></textarea>
+    <div class="hint">
+      ✅ <strong>Desde Excel:</strong> selecciona las filas de datos (sin encabezado), Ctrl+C y pega aquí.<br>
+      Columnas esperadas: <code>Jornada</code> <code>Local</code> <code>Score</code> <code>Visitante</code>
+    </div>
+  </div>
+
+  <button class="btn-gen" onclick="generateBanner()">📊 GENERAR BANNER DE RESULTADOS</button>
+  <div id="parse-error" class="err"></div>
+  <div id="parsed-ok" class="ok"></div>
+</div>
+
+<div id="preview-area" style="display:none">
+  <h2>Vista previa 1080×1080 px</h2>
+  <canvas id="banner-canvas"></canvas><br>
+  <button class="btn-dl" onclick="downloadBanner()">⬇ DESCARGAR PNG</button>
+</div>
+
+<script>
+/* ── PARSER ── */
+function parseRaw(raw) {
+  raw = raw.replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim();
+  const rows = [];
+  const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  for (const line of lines) {
+    let cols = line.includes('\t') ? line.split('\t').map(c=>c.trim())
+             : line.includes('|')  ? line.split('|').map(c=>c.trim()).filter(c=>c)
+             : null;
+    if (!cols || cols.length < 4) continue;
+    const jornada = cols[0];
+    const teamA   = cols[1];
+    const rawScore= cols[2].trim();
+    const teamB   = cols[3];
+    if (!/^\d+$/.test(jornada)) continue;
+    if (!/^\d+\s*-\s*\d+$/.test(rawScore)) continue;
+    if (!teamA || !teamB) continue;
+    const score = rawScore.replace(/\s+/g,'').replace(/(\d+)-(\d+)/,'$1 - $2');
+    rows.push({ jornada, teamA, score, teamB });
+  }
+  return rows;
+}
+
+/* ── FIT TEXT ── */
+function fit(ctx,text,maxW,base,w){
+  let s=base;
+  while(s>9){ctx.font=`${w} ${s}px "Barlow Condensed",sans-serif`;if(ctx.measureText(text).width<=maxW)break;s--;}
+  return s;
+}
+
+/* ── PELOTA DECORATIVA ── */
+function drawBall(ctx,cx,cy,r,alpha){
+  ctx.save();ctx.globalAlpha=alpha;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.fillStyle='#c8d8e8';ctx.fill();
+  const pr=r*0.28;
+  [[0,-0.62],[0.59,-0.19],[0.36,0.5],[-0.36,0.5],[-0.59,-0.19],[0,0]].forEach(([px,py])=>{
+    const bx=cx+px*r,by=cy+py*r,d=Math.sqrt(px*px+py*py),p=pr*(1-d*0.18);
+    ctx.beginPath();
+    for(let a=0;a<5;a++){const ag=-Math.PI/2+a*Math.PI*2/5;a===0?ctx.moveTo(bx+p*Math.cos(ag),by+p*Math.sin(ag)):ctx.lineTo(bx+p*Math.cos(ag),by+p*Math.sin(ag));}
+    ctx.closePath();ctx.fillStyle='#7090b0';ctx.fill();
+  });
+  ctx.restore();
+}
+
+/* ── LOGO ── */
+const _logo=new Image();_logo.src='../logo.svg';_logo.crossOrigin='anonymous';
+function drawLogo(ctx,cx,cy,r){
+  const g=ctx.createRadialGradient(cx-r*.3,cy-r*.3,r*.05,cx,cy,r);
+  g.addColorStop(0,'#1c3da6');g.addColorStop(1,'#040e30');
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+  const rg=ctx.createLinearGradient(cx-r,cy,cx+r,cy);
+  rg.addColorStop(0,'#6a3c00');rg.addColorStop(0.5,'#ffd15c');rg.addColorStop(1,'#6a3c00');
+  ctx.strokeStyle=rg;ctx.lineWidth=r*.07;ctx.stroke();
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,r*.82,0,Math.PI*2);ctx.clip();
+  if(_logo.complete&&_logo.naturalWidth>0){
+    const s=r*1.76;ctx.drawImage(_logo,cx-s/2,cy-s/2,s,s);
+  } else {
+    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.font=`900 ${r*.4}px "Barlow Condensed"`;ctx.fillText('CC',cx,cy);
+  }
+  ctx.restore();
+}
+
+/* ── TEXTO VERTICAL "FÚTBOL / N" A LA IZQUIERDA DE LA TABLA ── */
+function drawVerticalFutbol(ctx, num, tableX, tableY, tableH) {
+  const cx = tableX / 2;
+  const cy = tableY + tableH / 2;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(-Math.PI / 2);
+
+  const FONT  = '"Barlow Condensed", Impact, "Arial Narrow", sans-serif';
+  const NAVY  = '#081C4A';
+  const fSize = 92;
+  const nSize = 100;
+  const LS    = 14;
+  const gap   = 22;
+
+  /* ── Medir FÚTBOL con letter-spacing ── */
+  ctx.font = `italic 900 ${fSize}px ${FONT}`;
+  const lettersArr = 'FÚTBOL'.split('');
+  let fW = 0;
+  lettersArr.forEach((l, i) => {
+    fW += ctx.measureText(l).width + (i < lettersArr.length - 1 ? LS : 0);
+  });
+
+  /* ── Medir número ── */
+  ctx.font = `italic 900 ${nSize}px ${FONT}`;
+  const nW = ctx.measureText(num).width;
+
+  const total  = fW + gap + nW;
+  const startX = -total / 2;
+  const bY     = fSize * 0.36;
+
+  /* ─── Helper: 3 capas para grosor extremo ─── */
+  function drawThick(chars, x, y, size, spacing) {
+    ctx.font      = `italic 900 ${size}px ${FONT}`;
+    ctx.textBaseline = 'alphabetic';
+    ctx.textAlign    = 'left';
+    ctx.lineJoin     = 'round';
+    ctx.lineCap      = 'round';
+
+    /* Capa 1: stroke blanco MUY grueso → crea el cuerpo ancho del texto */
+    ctx.lineWidth   = 38;
+    ctx.strokeStyle = '#ffffff';
+    let px = x;
+    chars.forEach(c => {
+      ctx.strokeText(c, px, y);
+      px += ctx.measureText(c).width + spacing;
+    });
+
+    /* Capa 2: stroke azul marino grueso → rellena la forma con borde */
+    ctx.lineWidth   = 0;
+    ctx.fillStyle   = NAVY;
+    px = x;
+    chars.forEach(c => {
+      ctx.fillText(c, px, y);
+      px += ctx.measureText(c).width + spacing;
+    });
+
+    /* Capa 3: stroke azul fino → bordes nítidos y limpios */
+    ctx.lineWidth   = 2;
+    ctx.strokeStyle = NAVY;
+    px = x;
+    chars.forEach(c => {
+      ctx.strokeText(c, px, y);
+      px += ctx.measureText(c).width + spacing;
+    });
+  }
+
+  /* FÚTBOL */
+  drawThick('FÚTBOL'.split(''), startX, bY, fSize, LS);
+
+  /* Número — alineado a la base */
+  const nx   = startX + fW + gap;
+  const numY = bY + (nSize - fSize) * 0.52;
+  drawThick(num.split(''), nx, numY, nSize, 0);
+
+  ctx.restore();
+}
+
+/* ══════════════ DRAW PRINCIPAL ══════════════ */
+function _doDraw(){
+  const raw    = document.getElementById('rawData').value;
+  const fecha  = document.getElementById('fecha').value;
+  const futbol = document.getElementById('futbol').value.trim() || '7';
+  const temp   = document.getElementById('temporada').value;
+
+  document.getElementById('parse-error').textContent='';
+  document.getElementById('parsed-ok').textContent='';
+
+  const rows = parseRaw(raw);
+  if(!rows.length){
+    document.getElementById('parse-error').textContent='⚠ No se leyeron partidos. Pega desde Excel: Jornada | Local | Score | Visitante';
+    return;
+  }
+  document.getElementById('parsed-ok').textContent=`✔ ${rows.length} partido(s) detectados.`;
+
+  const W=1080, H=1080;
+  const cv=document.getElementById('banner-canvas');
+  cv.width=W; cv.height=H;
+  const ctx=cv.getContext('2d');
+
+  /* ── MEDIDAS ── */
+  const HEADER  = 160;
+  const DATEBAR = 58;
+  const FOOTER  = 86;
+  const PAD_L   = 118;   /* espacio para el texto vertical */
+  const PAD_R   = 28;
+  const TBL_X   = PAD_L;
+  const TBL_W   = W - PAD_L - PAD_R;
+  const GAP     = 18;
+  const THEAD   = 54;
+  const TABLE_Y = HEADER + DATEBAR + GAP;
+  const AVAIL_H = H - TABLE_Y - THEAD - FOOTER - 10;
+  const ROW_H   = Math.max(38, Math.min(66, AVAIL_H / rows.length));
+  const TABLE_H = THEAD + rows.length * ROW_H;
+
+  /* Columnas con CAT restaurada — Local y Visitante iguales */
+  const CC_W  = 100;
+  const CS_W  = 150;
+  const TEAMS_W = TBL_W - CC_W - CS_W;   /* espacio restante para ambos equipos */
+  const TEAM_W  = Math.floor(TEAMS_W / 2); /* mitad exacta para cada equipo */
+  const CC = {x: TBL_X,                    w: CC_W};
+  const CA = {x: TBL_X + CC_W,             w: TEAM_W};   /* Local    */
+  const CS = {x: TBL_X + CC_W + TEAM_W,    w: CS_W};     /* Score    */
+  const CB = {x: TBL_X + CC_W + TEAM_W + CS_W, w: TEAM_W}; /* Visitante */
+
+  /* ══ FONDO ══ */
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
+  drawBall(ctx, W-90,  HEADER+DATEBAR+200, 150, 0.07);
+  drawBall(ctx, 48,    H-FOOTER-170,       120, 0.06);
+
+  /* ══ HEADER ══ */
+  const hg=ctx.createLinearGradient(0,0,0,HEADER);
+  hg.addColorStop(0,'#0b2060'); hg.addColorStop(1,'#1a3d8a');
+  ctx.fillStyle=hg; ctx.fillRect(0,0,W,HEADER);
+  ctx.fillStyle='#f5c800'; ctx.fillRect(0,0,W,7);
+  ctx.fillStyle='rgba(245,200,0,0.3)'; ctx.fillRect(0,HEADER-1,W,1);
+
+  drawLogo(ctx,76,HEADER/2+4,55);
+
+  /* Título */
+  const TITLE_X=144, TITLE_MAX=600;
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillStyle='#ffffff';
+  const tSize1=fit(ctx,'COPA CAJAMARCA',TITLE_MAX,68,'900');
+  ctx.shadowColor='rgba(245,200,0,0.35)'; ctx.shadowBlur=8;
+  ctx.font=`900 ${tSize1}px "Barlow Condensed",sans-serif`;
+  ctx.fillText('COPA CAJAMARCA',TITLE_X,HEADER/2-18);
+  ctx.shadowBlur=0;
+  ctx.fillStyle='#c0d0f0';
+  const tSize2=fit(ctx,'CAMPEONATO DE MENORES',TITLE_MAX,34,'700');
+  ctx.font=`700 ${tSize2}px "Barlow Condensed",sans-serif`;
+  ctx.fillText('CAMPEONATO DE MENORES',TITLE_X,HEADER/2+26);
+
+  /* RESULTADOS derecha */
+  let rSize=82;
+  while(rSize>24){
+    ctx.font=`italic 900 ${rSize}px "Barlow Condensed",sans-serif`;
+    if(ctx.measureText('RESULTADOS').width<=430)break; rSize--;
+  }
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  ctx.shadowColor='rgba(220,20,20,0.85)'; ctx.shadowBlur=20;
+  ctx.fillStyle='#e01010';
+  ctx.font=`italic 900 ${rSize}px "Barlow Condensed",sans-serif`;
+  ctx.fillText('RESULTADOS',W-18,HEADER/2+8);
+  ctx.shadowBlur=0;
+
+  /* ══ DATE BAR ══ */
+  const dy=HEADER;
+  const dg=ctx.createLinearGradient(0,dy,W,dy+DATEBAR);
+  dg.addColorStop(0,'#e0a200'); dg.addColorStop(0.5,'#f5c800'); dg.addColorStop(1,'#e0a200');
+  ctx.fillStyle=dg; ctx.fillRect(0,dy,W,DATEBAR);
+  ctx.fillStyle='rgba(255,255,255,.22)'; ctx.fillRect(0,dy,W,2);
+  ctx.fillStyle='rgba(0,0,0,.18)'; ctx.fillRect(0,dy+DATEBAR-2,W,2);
+  ctx.fillStyle='#0a1830'; ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.font='bold 28px "Barlow Condensed",sans-serif';
+  ctx.fillText(fecha,22,dy+DATEBAR/2);
+
+  /* ══ TEXTO VERTICAL FÚTBOL N ══ */
+  drawVerticalFutbol(ctx, futbol, TBL_X, TABLE_Y, TABLE_H);
+
+  /* ══ CABECERA TABLA ══ */
+  ctx.fillStyle='#1a3d8a';
+  ctx.fillRect(TBL_X,TABLE_Y,TBL_W,THEAD);
+  ctx.fillStyle='#f5c800'; ctx.fillRect(TBL_X,TABLE_Y+THEAD-3,TBL_W,3);
+  ctx.fillStyle='#f5c800'; ctx.font='700 20px "Barlow Condensed",sans-serif';
+  ctx.textBaseline='middle'; ctx.textAlign='center';
+  ctx.fillText('CAT.', CC.x+CC.w/2, TABLE_Y+THEAD/2);
+  ctx.fillText('PARTIDO', CC.x+CC.w+(TBL_W-CC.w)/2, TABLE_Y+THEAD/2);
+  /* Separador vertical cabecera */
+  ctx.fillStyle='rgba(245,200,0,0.35)';
+  ctx.fillRect(CA.x, TABLE_Y+8, 1, THEAD-16);
+
+  /* ══ FILAS ══ */
+  const RS = TABLE_Y + THEAD;
+  rows.forEach((r,i)=>{
+    const ry=RS+i*ROW_H;
+    ctx.fillStyle = i%2===0 ? '#ffffff' : '#d8dfe8';
+    ctx.fillRect(TBL_X,ry,TBL_W,ROW_H);
+    ctx.fillStyle='rgba(100,130,180,0.14)';
+    ctx.fillRect(TBL_X,ry+ROW_H-1,TBL_W,1);
+
+    const my=ry+ROW_H/2;
+    const fs=Math.max(16, Math.min(30, ROW_H*0.58));
+    ctx.textBaseline='middle';
+
+    /* CAT itálica */
+    ctx.fillStyle='#1a2a5a';
+    ctx.font=`italic 700 ${fs}px "Barlow Condensed",sans-serif`;
+    ctx.textAlign='center';
+    ctx.fillText(r.jornada, CC.x+CC.w/2, my);
+
+    /* LOCAL */
+    const as=fit(ctx,r.teamA.toUpperCase(),CA.w-12,fs,'700');
+    ctx.font=`700 ${as}px "Barlow Condensed",sans-serif`;
+    ctx.fillStyle='#111827'; ctx.textAlign='right';
+    ctx.fillText(r.teamA.toUpperCase(), CA.x+CA.w-8, my);
+
+    /* SCORE */
+    ctx.font=`bold ${Math.max(fs,16)}px "Barlow Condensed",sans-serif`;
+    ctx.fillStyle='#111827'; ctx.textAlign='center';
+    ctx.fillText(r.score, CS.x+CS.w/2, my);
+
+    /* VISITANTE */
+    const bs=fit(ctx,r.teamB.toUpperCase(),CB.w-12,fs,'700');
+    ctx.font=`700 ${bs}px "Barlow Condensed",sans-serif`;
+    ctx.fillStyle='#111827'; ctx.textAlign='left';
+    ctx.fillText(r.teamB.toUpperCase(), CB.x+8, my);
+  });
+
+  /* Bordes tabla */
+  ctx.strokeStyle='rgba(26,61,138,0.28)'; ctx.lineWidth=1.5;
+  ctx.strokeRect(TBL_X,TABLE_Y,TBL_W,TABLE_H);
+  /* Separadores verticales */
+  ctx.fillStyle='rgba(26,61,138,0.12)';
+  ctx.fillRect(CA.x, RS, 1, rows.length*ROW_H);
+  ctx.fillRect(CA.x+CA.w, RS, 1, rows.length*ROW_H);
+  ctx.fillRect(CS.x+CS.w, RS, 1, rows.length*ROW_H);
+
+  /* ══ FOOTER ══ */
+  const fy=H-FOOTER;
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,fy,W,FOOTER);
+  ctx.fillStyle='rgba(0,0,0,0.07)'; ctx.fillRect(0,fy,W,1);
+  ctx.fillStyle='#e01010';
+  ctx.beginPath(); ctx.moveTo(0,H); ctx.lineTo(88,H); ctx.lineTo(0,H-88);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#0a1830'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='900 36px "Bebas Neue",sans-serif';
+  ctx.fillText(temp,W/2,fy+FOOTER/2);
+  ctx.fillStyle='#1877f2';
+//   ctx.beginPath(); ctx.arc(W-200,fy+FOOTER/2,20,0,Math.PI*2); ctx.fill();
+//   ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
+//   ctx.font='bold 20px serif'; ctx.fillText('f',W-200,fy+FOOTER/2+1);
+//   ctx.fillStyle='#0a1830'; ctx.textAlign='left'; ctx.textBaseline='middle';
+//   ctx.font='600 12px "Barlow Condensed",sans-serif';
+//   ctx.fillText('Copa Cajamarca',W-172,fy+FOOTER/2-7);
+//   ctx.font='500 11px "Barlow Condensed",sans-serif';
+//   ctx.fillText('Campeonato de Menores',W-172,fy+FOOTER/2+8);
+
+  document.getElementById('preview-area').style.display='block';
+  document.getElementById('preview-area').scrollIntoView({behavior:'smooth'});
+}
+
+function generateBanner(){_doDraw();}
+function downloadBanner(){
+  const cv=document.getElementById('banner-canvas');
+  try{const a=document.createElement('a');a.download='copa_cajamarca_resultados_1080x1080.png';a.href=cv.toDataURL('image/png');a.click();}
+  catch(e){alert('Abre desde un servidor local para exportar.');}
+}
+_logo.onload=()=>{if(document.getElementById('preview-area').style.display!=='none')_doDraw();};
+</script>
+</body>
+</html>
