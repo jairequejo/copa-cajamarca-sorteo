@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════
-   Copa Cajamarca — Generador de Banners
+   Copa Cajamarca — Generador de Banners HORARIOS
    app.js
 ═══════════════════════════════════════════ */
 
