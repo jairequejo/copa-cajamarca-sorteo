@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copa Cajamarca – Torneos & Fixture</title>
+  <meta name="description" content="Estado del fixture por categoría. Detecta partidos faltantes desde Google Sheets.">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="../home/index.html">
+      <img src="../logo.svg" alt="Copa Cajamarca">
+      <span class="nav-logo-text">Copa Cajamarca</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../sorteo/index.html">Sorteo</a></li>
+      <li><a href="../horarios/index.html">Horarios</a></li>
+      <li><a href="index.html" class="active">Torneos</a></li>
+      <li><a href="../cronograma/index.html">Cronograma</a></li>
+      <li><a href="../tabla_posiciones/index.html">Posiciones</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE -->
+  <div class="page">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-eyebrow">Copa Cajamarca 2026</div>
+        <h1 class="page-title">Torneos &amp; Fixture</h1>
+        <p class="page-sub">Estado del fixture por categoría · Detecta partidos faltantes en Google Sheets</p>
+      </div>
+      <button class="btn-refresh" onclick="loadAll()">
+        ↺ Actualizar datos
+      </button>
+    </div>
+
+    <!-- MODE TABS -->
+    <div class="mode-tabs">
+      <button class="mode-tab tab-active" id="tabFixture" onclick="setMode('fixture')">📋 Fixture</button>
+      <button class="mode-tab" id="tabStandings" onclick="setMode('standings')">🏆 Tabla de Posiciones</button>
+    </div>
+
+    <!-- LOADER -->
+    <div class="loader-wrap" id="loaderWrap">
+      <div class="loader-ring"></div>
+      <div class="loader-text" id="loaderText">Conectando con Google Sheets…</div>
+    </div>
+
+    <!-- ERROR -->
+    <div class="error-box hidden" id="errorBox">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title" id="errorTitle">No se pudo cargar</div>
+      <div class="error-msg"   id="errorMsg"></div>
+      <button class="btn-retry" onclick="loadAll()">↺ Reintentar</button>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="summary-grid hidden" id="summaryGrid">
+      <div class="summary-card c-default">
+        <div class="sc-label">Categorías</div>
+        <div class="sc-value" id="sumCats">0</div>
+        <div class="sc-sub">en el torneo</div>
+      </div>
+      <div class="summary-card c-amber">
+        <div class="sc-label">Esperados</div>
+        <div class="sc-value v-amber" id="sumExpected">0</div>
+        <div class="sc-sub">según el sorteo</div>
+      </div>
+      <div class="summary-card c-green">
+        <div class="sc-label">En Sheets</div>
+        <div class="sc-value v-green" id="sumLoaded">0</div>
+        <div class="sc-sub">pestaña FIXTURE</div>
+      </div>
+      <div class="summary-card c-red">
+        <div class="sc-label">Faltantes</div>
+        <div class="sc-value v-red" id="sumMissing">0</div>
+        <div class="sc-sub">por ingresar</div>
+      </div>
+      <div class="summary-card c-green">
+        <div class="sc-label">Jugados</div>
+        <div class="sc-value v-green" id="sumPlayed">0</div>
+        <div class="sc-sub">con resultado</div>
+      </div>
+      <div class="summary-card c-amber">
+        <div class="sc-label">Pendientes</div>
+        <div class="sc-value v-amber" id="sumPending">0</div>
+        <div class="sc-sub">sin resultado</div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-card hidden" id="filterBar">
+      <span class="filter-label">Categoría</span>
+      <div class="pills" id="catPills"></div>
+      <div class="divider"></div>
+      <div id="viewRow" class="view-toggle">
+        <button class="toggle-btn active" id="btnAll"     onclick="setView('all')">Todos</button>
+        <button class="toggle-btn"        id="btnMissing" onclick="setView('missing')">Solo faltantes</button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div id="mainContent"></div>
+
+    <!-- LAST UPDATED -->
+    <div class="last-updated hidden" id="lastUpdated"></div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 <strong>Copa Cajamarca</strong> · Campeonato de Menores · Temporada 2026</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

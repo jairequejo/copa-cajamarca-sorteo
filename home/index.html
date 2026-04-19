@@ -403,13 +403,16 @@
   <!-- NAV -->
   <nav>
     <a class="nav-logo" href="index.html">
-      <img src="logo.svg" alt="Copa Cajamarca Logo">
+      <img src="../logo.svg" alt="Copa Cajamarca Logo">
       <span class="nav-logo-text">Copa Cajamarca</span>
     </a>
     <ul class="nav-links">
       <li><a href="#modulos">Módulos</a></li>
-      <li><a href="sorteo/index.html">Sorteo</a></li>
-      <li><a href="horarios/index.html">Horarios</a></li>
+      <li><a href="../sorteo/index.html">Sorteo</a></li>
+      <li><a href="../horarios/index.html">Horarios</a></li>
+      <li><a href="../torneos/index.html">Torneos</a></li>
+      <li><a href="../cronograma/index.html">Cronograma</a></li>
+      <li><a href="../tabla_posiciones/index.html">Posiciones</a></li>
     </ul>
   </nav>
 
@@ -419,7 +422,7 @@
     <div class="diag"></div>
 
     <div class="hero-inner">
-      <img class="hero-logo" src="logo.svg" alt="Copa Cajamarca">
+      <img class="hero-logo" src="../logo.svg" alt="Copa Cajamarca">
       <div class="hero-badge">⚽ Temporada 2026</div>
       <h1 class="hero-title">Gestor de<br>Copa Cajamarca</h1>
       <p class="hero-sub">Campeonato de Menores · Fútbol 9</p>
@@ -428,8 +431,8 @@
         generación de horarios para redes sociales al instante.
       </p>
       <div>
-        <a class="hero-cta" href="sorteo/index.html">🏆 Ir al Sorteo</a>
-        <a class="hero-cta-ghost" href="horarios/index.html">🎨 Generar Horarios</a>
+        <a class="hero-cta" href="../sorteo/index.html">🏆 Ir al Sorteo</a>
+        <a class="hero-cta-ghost" href="../horarios/index.html">🎨 Generar Horarios</a>
       </div>
     </div>
   </section>
@@ -441,7 +444,7 @@
 
     <div class="module-grid">
 
-      <a href="sorteo/index.html" class="module-card">
+      <a href="../sorteo/index.html" class="module-card">
         <div class="module-icon">🎲</div>
         <div class="module-name">Sorteo de Grupos</div>
         <p class="module-desc">
@@ -451,7 +454,7 @@
         <span class="module-tag">Disponible</span>
       </a>
 
-      <a href="horarios/index.html" class="module-card">
+      <a href="../horarios/index.html" class="module-card">
         <div class="module-icon">🖼️</div>
         <div class="module-name">Generador de Horarios</div>
         <p class="module-desc">
@@ -461,25 +464,35 @@
         <span class="module-tag">Disponible</span>
       </a>
 
-      <div class="module-card" style="cursor:default;opacity:.7">
+      <a href="../tabla_posiciones/index.html" class="module-card">
         <div class="module-icon">📊</div>
         <div class="module-name">Tabla de Posiciones</div>
         <p class="module-desc">
-          Seguimiento de puntos, goles y estadísticas de todos los equipos y categorías
-          del campeonato en tiempo real.
+          Clasificación en tiempo real de todos los equipos y categorías.
+          Carga automáticamente desde Google Sheets.
         </p>
-        <span class="module-tag soon">Próximamente</span>
-      </div>
+        <span class="module-tag">Disponible</span>
+      </a>
 
-      <div class="module-card" style="cursor:default;opacity:.7">
-        <div class="module-icon">📅</div>
-        <div class="module-name">Calendario de Partidos</div>
+      <a href="../torneos/index.html" class="module-card">
+        <div class="module-icon">🏆</div>
+        <div class="module-name">Torneos & Fixture</div>
         <p class="module-desc">
-          Visualiza y gestiona la programación completa de jornadas con filtros por
-          fecha, categoría y sede.
+          Carga el fixture desde Google Sheets y detecta automáticamente
+          los partidos que faltan por ingresar en la planilla.
         </p>
-        <span class="module-tag soon">Próximamente</span>
-      </div>
+        <span class="module-tag">Disponible</span>
+      </a>
+
+      <a href="../cronograma/index.html" class="module-card">
+        <div class="module-icon">📅</div>
+        <div class="module-name">Cronograma</div>
+        <p class="module-desc">
+          Gestiona horarios por cancha con drag & drop. Asigna partidos F6 y F9
+          a diferentes campos y exporta el flyer en PNG para redes sociales.
+        </p>
+        <span class="module-tag">Disponible</span>
+      </a>
 
     </div>
   </section>

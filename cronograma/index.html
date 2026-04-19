@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copa Cajamarca — Cronograma de Partidos</title>
+  <meta name="description" content="Cronograma de horarios por cancha para la Copa Cajamarca 2026.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="../logo.svg" type="image/svg+xml">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+
+<body>
+
+  <div class="top-bar"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="../home/index.html">
+      <img src="../logo.svg" alt="Copa Cajamarca">
+      <span class="nav-logo-text">Copa Cajamarca</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../sorteo/index.html">Sorteo</a></li>
+      <li><a href="../horarios/index.html">Horarios</a></li>
+      <li><a href="../torneos/index.html">Torneos</a></li>
+      <li><a href="index.html" class="active">Cronograma</a></li>
+      <li><a href="../tabla_posiciones/index.html">Posiciones</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <div class="page-eyebrow">Copa Cajamarca 2026</div>
+        <h1 class="page-title">CRONOGRAMA DE PARTIDOS</h1>
+        <p class="page-sub">Arrastra partidos pendientes a los horarios · F9 campo grande 45 min · F7 campos pequeños 35 min</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <div id="loadingBadge" class="loading-badge">⏳ Cargando partidos...</div>
+        <input id="inputFecha" type="date" class="input" style="width:170px;">
+        <button onclick="window.Cron.abrirModalExport()" class="btn btn-primary" id="btnExport" style="gap:8px;" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Exportar PNG
+        </button>
+        <button onclick="window.Cron.recargar()" class="btn btn-outline" style="gap:6px;">↺ Actualizar</button>
+      </div>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div class="main-grid">
+
+      <!-- PANEL IZQUIERDO: Partidos pendientes del sheets -->
+      <aside>
+
+        <!-- leyenda -->
+        <div class="card" style="margin-bottom:12px;">
+          <div class="card-body" style="padding:12px 16px;">
+            <div style="font-size:11px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Referencia</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span class="badge badge-f9">F9</span>
+                <span style="font-size:11px;color:var(--gray-700);">Cat. 2013 / 2014 — 45 min · Campo Grande</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span class="badge badge-f7">F7</span>
+                <span style="font-size:11px;color:var(--gray-700);">Cat. 2015→2020 — 35 min · Campos pequeños (máx 3 simultáneos)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtro de categoría -->
+        <div class="card" style="margin-bottom:12px;">
+          <div class="card-body" style="padding:12px 16px;">
+            <label class="label">Filtrar por categoría</label>
+            <select id="filtroCat" class="input select" onchange="window.Cron.filtrarPendientes()">
+              <option value="">Todas</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Lista de partidos pendientes -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Partidos Pendientes</h3>
+            <span class="badge-count" id="contadorPartidos">0</span>
+          </div>
+          <div class="card-body" style="padding:12px;">
+            <div id="partidosList" class="scroll-list" style="min-height:200px;gap:6px;"></div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="card" style="margin-top:12px;">
+          <div class="card-header"><h3>Resumen</h3></div>
+          <div class="card-body">
+            <div class="stats-grid">
+              <div class="stat-box">
+                <p class="stat-value v-primary" id="statAsig">0</p>
+                <p class="stat-label">Asignados</p>
+              </div>
+              <div class="stat-box">
+                <p class="stat-value v-gold" id="statPend">0</p>
+                <p class="stat-label">Sin asignar</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- PANEL DERECHO: Grilla de canchas -->
+      <div id="editGrid" style="display:flex;flex-direction:column;gap:20px;">
+        <div class="card">
+          <div class="card-body empty-state" style="padding:40px;">
+            <div class="icon">⏳</div>
+            <p>Cargando partidos del Google Sheets...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== MODAL EXPORT ===== -->
+  <div id="modalExport" class="modal-bg" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <h2 class="modal-title" style="margin:0;">📤 Exportar Cronograma</h2>
+        <button onclick="window.Cron.cerrarModalExport()" class="btn-danger" style="font-size:24px;">×</button>
+      </div>
+
+      <p class="modal-label">Canchas F9 a incluir</p>
+      <div id="checkF9" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+
+      <p class="modal-label">Canchas F7 a incluir</p>
+      <div id="checkF7" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
+
+      <p class="modal-label">Fecha del flyer</p>
+      <p id="modalFechaStr" class="modal-fecha" style="margin-bottom:20px;">Fecha no configurada</p>
+
+      <div class="modal-actions">
+        <button onclick="window.Cron.cerrarModalExport()" class="btn btn-outline">Cancelar</button>
+        <button id="btnGenerar" onclick="window.Cron.generarFlyer()" class="btn btn-accent">
+          📸 Generar PNG para Facebook
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLYER CONTAINER (invisible) -->
+  <div id="flyerContainer"></div>
+
+  <script src="app.js" defer></script>
+</body>
+
+</html>

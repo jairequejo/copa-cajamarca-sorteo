@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copa Cajamarca – Tabla de Posiciones</title>
+  <meta name="description" content="Tabla de posiciones por categoría. Copa Cajamarca 2026.">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <nav>
+    <a class="nav-logo" href="../home/index.html">
+      <img src="../logo.svg" alt="Copa Cajamarca">
+      <span class="nav-logo-text">Copa Cajamarca</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../sorteo/index.html">Sorteo</a></li>
+      <li><a href="../horarios/index.html">Horarios</a></li>
+      <li><a href="../torneos/index.html">Torneos</a></li>
+      <li><a href="../cronograma/index.html">Cronograma</a></li>
+      <li><a href="index.html" class="active">Posiciones</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <div>
+        <div class="page-eyebrow">Copa Cajamarca 2026</div>
+        <h1 class="page-title">Tabla de Posiciones</h1>
+        <p class="page-sub">Clasificación en tiempo real por categoría · Actualizada desde Google Sheets</p>
+      </div>
+      <button class="btn-refresh" onclick="loadAll()">↺ Actualizar</button>
+    </div>
+
+    <!-- LOADER -->
+    <div class="loader-wrap" id="loaderWrap">
+      <div class="loader-ring"></div>
+      <div class="loader-text" id="loaderText">Conectando con Google Sheets…</div>
+    </div>
+
+    <!-- ERROR -->
+    <div class="error-box hidden" id="errorBox">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title" id="errorTitle">No se pudo cargar</div>
+      <div class="error-msg"   id="errorMsg"></div>
+      <button class="btn-retry" onclick="loadAll()">↺ Reintentar</button>
+    </div>
+
+    <!-- RESUMEN GENERAL -->
+    <div class="summary-row hidden" id="summaryRow"></div>
+
+    <!-- CAT TABS -->
+    <div class="cat-tabs hidden" id="catTabs"></div>
+
+    <!-- CONTENT -->
+    <div id="mainContent"></div>
+
+    <!-- LAST UPDATED -->
+    <div class="last-updated hidden" id="lastUpdated"></div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 <strong>Copa Cajamarca</strong> · Campeonato de Menores · Temporada 2026</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
